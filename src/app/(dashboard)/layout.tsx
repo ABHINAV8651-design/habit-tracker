@@ -12,10 +12,15 @@ export default async function DashboardLayout({
   if (!session) {
     redirect("/login");
   }
-  const user = await prisma.user.findUnique({
-    where: { id: session.userId },
-    select: { id: true, onboardingComplete: true },
-  });
+  let user;
+  try {
+    user = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: { id: true, onboardingComplete: true },
+    });
+  } catch {
+    redirect("/login");
+  }
   if (!user) {
     redirect("/login");
   }

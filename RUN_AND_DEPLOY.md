@@ -109,6 +109,7 @@ git push -u origin main
 4. **Environment** (Add Environment Variable):
    - `DATABASE_URL` = (paste PostgreSQL URL from step B).
    - `JWT_SECRET` = (long random string, e.g. from [randomkeygen.com](https://randomkeygen.com)).
+   - `NEXT_PUBLIC_APP_URL` = your Render service URL (e.g. `https://futureme-ai-life-os.onrender.com`) so logout redirects correctly.
    - `OPENAI_API_KEY` = (your OpenAI key; optional, for AI Insights).
 
 5. Click **Create Web Service**.
@@ -127,6 +128,8 @@ npx prisma db push
 ```
 
 Then refresh your app URL.
+
+**Health check:** The app exposes `GET /api/health` (returns `{ status: "ok" }`). You can set this as the health check path in Render for faster deploys.
 
 ---
 
