@@ -48,6 +48,13 @@ npm run dev
 
 Open **http://localhost:3000** in your browser.
 
+**One-shot setup (Windows):** From the project folder you can run:
+
+- **PowerShell:** `.\setup-and-run.ps1`
+- **CMD:** `setup-and-run.cmd`
+
+These install deps, create `.env` from `.env.example` if missing, run `prisma generate`, `prisma db push`, then `npm run dev`. Edit `.env` and set `DATABASE_URL` before running if you have PostgreSQL ready.
+
 ### Quick test
 
 1. Click **Get started** → register with email/password.

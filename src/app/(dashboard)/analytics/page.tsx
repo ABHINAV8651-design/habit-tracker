@@ -58,8 +58,10 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             {data.mostConsistent ? (
-              <p className="text-2xl font-bold">{data.mostConsistent.name}</p>
-              <p className="text-muted-foreground">{data.mostConsistent.consistencyPct}%</p>
+              <>
+                <p className="text-2xl font-bold">{data.mostConsistent.name}</p>
+                <p className="text-muted-foreground">{data.mostConsistent.consistencyPct}%</p>
+              </>
             ) : (
               <p className="text-muted-foreground">No data yet.</p>
             )}

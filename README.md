@@ -2,6 +2,8 @@
 
 A full-stack AI-powered life optimization and habit tracking web app: personal life OS, success dashboard, fitness + productivity tracker, dream life projection engine, and AI self-improvement assistant.
 
+**→ How to run locally and deploy on Render:** see **[RUN_AND_DEPLOY.md](./RUN_AND_DEPLOY.md)**
+
 ## Tech stack
 
 - **Frontend:** Next.js (App Router), TypeScript, Tailwind CSS, ShadCN-style UI, Framer Motion, Recharts
