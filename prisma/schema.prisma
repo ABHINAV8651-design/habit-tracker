@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  name          String?
+  age           Int?
+  gender        String?
+  mainGoal      String?   @map("main_goal")
+  currentStruggles String? @map("current_struggles")
+  wakeUpTime    String?   @map("wake_up_time")
+  sleepTime     String?   @map("sleep_time")
+  fitnessLevel  String?   @map("fitness_level")
+  weight        Float?
+  height        Float?
+  dailyFreeTime String?   @map("daily_free_time")
+  dreamLifeDesc String?   @map("dream_life_desc")
+  onboardingComplete Boolean @default(false) @map("onboarding_complete")
+  xp            Int       @default(0)
+  level         Int       @default(1)
+  disciplineScore Float   @default(0) @map("discipline_score")
+  theme         String    @default("dark") // dark | light
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  habits        Habit[]
+  habitLogs     HabitLog[]
+  workouts      Workout[]
+  waterLogs     WaterLog[]
+  calorieLogs   CalorieLog[]
+  productivityLogs ProductivityLog[]
+  aiInsights    AIInsight[]
+  futureProjections FutureProjection[]
+  achievements  Achievement[]
+}
+
+model Habit {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id")
+  name            String
+  type            String   // Study, Gym, Water, Calories, Cardio, Meditation, Reading, Business, Content, Custom
+  targetFrequency String   @map("target_frequency") // daily, weekly, monthly
+  targetHours     Float?   @map("target_hours")
+  targetCount     Int?     @map("target_count")
+  reminderTime    String?  @map("reminder_time")
+  priority        Int      @default(1)
+  categoryTag     String?  @map("category_tag")
+  notes           String?
+  streak          Int      @default(0)
+  consistencyPct  Float    @default(0) @map("consistency_pct")
+  failureRate     Float    @default(0) @map("failure_rate")
+  strengthScore   Float    @default(0) @map("strength_score")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs    HabitLog[]
+}
+
+model HabitLog {
+  id          String   @id @default(cuid())
+  habitId     String   @map("habit_id")
+  userId      String   @map("user_id")
+  completed   Boolean  @default(false)
+  timeSpent   Float?   @map("time_spent") // minutes
+  value       Float?   // for water glasses, calories etc
+  date        DateTime @db.Date
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  habit Habit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, date])
+  @@index([userId, date])
+}
+
+model Workout {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  name        String
+  date        DateTime @db.Date
+  duration    Int?     // minutes
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercises Exercise[]
+}
+
+model Exercise {
+  id         String  @id @default(cuid())
+  workoutId  String  @map("workout_id")
+  name       String
+  sets       Int?
+  reps       Int?
+  weight     Float?
+  duration   Int?    // seconds for cardio
+  notes      String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+}
+
+model WaterLog {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  amount    Float    // glasses or ml
+  date      DateTime @db.Date
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+model CalorieLog {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  calories  Int
+  protein   Float?
+  date      DateTime @db.Date
+  mealType  String?  @map("meal_type")
+  notes     String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+model ProductivityLog {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  date          DateTime @db.Date
+  pomodoroCount Int      @default(0) @map("pomodoro_count")
+  focusMinutes  Int      @default(0) @map("focus_minutes")
+  deepWorkHours Float    @default(0) @map("deep_work_hours")
+  distractions  Int      @default(0)
+  tasksCompleted Int     @default(0) @map("tasks_completed")
+  score         Float    @default(0)
+  notes         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model AIInsight {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  type        String   // suggestion, warning, improvement
+  title       String
+  content     String
+  category    String?
+  priority    Int      @default(1)
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FutureProjection {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  horizon       String   // 3m, 6m, 1y, 3y
+  bodyTransform String?  @map("body_transform")
+  skillGrowth   Float?   @map("skill_growth")
+  productivityIncrease Float? @map("productivity_increase")
+  successProbability Float? @map("success_probability")
+  dreamAlignment Float?  @map("dream_alignment")
+  summary       String?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  type        String
+  name        String
+  description String?
+  icon        String?
+  xpReward    Int      @default(0) @map("xp_reward")
+  earnedAt    DateTime @default(now()) @map("earned_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
