@@ -23,9 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationError>
+    <html lang="en" suppressHydrationError className="dark">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans min-h-screen`}
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans min-h-screen bg-background text-foreground`}
+        style={{ backgroundColor: "hsl(240 10% 4%)", color: "hsl(0 0% 98%)" }}
       >
         <ThemeProvider
           attribute="class"
@@ -35,6 +36,11 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <noscript>
+          <div style={{ padding: "2rem", textAlign: "center", color: "#fff" }}>
+            FutureMe AI – Life OS. Please enable JavaScript to use the app.
+          </div>
+        </noscript>
       </body>
     </html>
   );
